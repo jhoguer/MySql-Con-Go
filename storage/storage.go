@@ -30,3 +30,8 @@ func NewMySQLDB() {
 		fmt.Println("conectado a mySQL")
 	})
 }
+
+// Pool return a unique instace of db
+func Pool() *sql.DB {
+	return db
+}
