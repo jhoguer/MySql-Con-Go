@@ -35,4 +35,15 @@ func main() {
 	if err != nil {
 		log.Fatalf("invoiceitem.Migrate: %v", err)
 	}
+
+	m := &product.Model{
+		Name:  "Curso Go desde cero",
+		Price: 60,
+	}
+
+	err = serviceProduct.Create(m)
+	if err != nil {
+		log.Fatalf("product.Create: %v", err)
+	}
+
 }
