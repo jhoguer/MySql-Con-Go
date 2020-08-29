@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/jhoguer/MySql-Con-Go/pkg/invoiceheader"
@@ -36,14 +37,23 @@ func main() {
 		log.Fatalf("invoiceitem.Migrate: %v", err)
 	}
 
-	m := &product.Model{
-		Name:  "Curso Go desde cero",
-		Price: 60,
+	//
+	// m := &product.Model{
+	// 	Name:         "Curso de JavaScript",
+	// 	Price:        70,
+	// 	Observations: "Este curso es basico",
+	// }
+
+	// err = serviceProduct.Create(m)
+	// if err != nil {
+	// 	log.Fatalf("product.Create: %v", err)
+	// }
+
+	res, err := serviceProduct.GetAll()
+	if err != nil {
+		log.Fatalf("product.GetAll: %v", err)
 	}
 
-	err = serviceProduct.Create(m)
-	if err != nil {
-		log.Fatalf("product.Create: %v", err)
-	}
+	fmt.Println(res)
 
 }

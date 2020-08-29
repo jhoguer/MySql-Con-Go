@@ -7,6 +7,10 @@ import (
 	"github.com/jhoguer/MySql-Con-Go/pkg/product"
 )
 
+type scanner interface {
+	Scan(dest ...interface{}) error
+}
+
 const (
 	mySQLMigrateProduct = `CREATE TABLE IF NOT EXISTS products(
 		id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -17,6 +21,8 @@ const (
 		updated_at TIMESTAMP)`
 	mySQLCreateProduct = `INSERT INTO products(name, observations, price, created_at) 
 												VALUES(?, ?, ?, ?)`
+	mySQLGetAllProducts = `SELECT id, name, observations, price, created_at, updated_at
+												FROM products`
 )
 
 // MySQLProduct used for work with mysql - product
@@ -75,4 +81,58 @@ func (p *MySQLProduct) Create(m *product.Model) error {
 
 	fmt.Printf("Se creo el producto correctamente con ID: %d", m.ID)
 	return nil
+}
+
+// GetAll implementa la interface product.Storage
+func (p *MySQLProduct) GetAll() (product.Models, error) {
+	stmt, err := p.db.Prepare(mySQLGetAllProducts)
+	if err != nil {
+		// Retorna el valor cero de un slice que es nil y el err
+		return nil, err
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// ms := make(product.Models, 0)
+	var ms product.Models
+	for rows.Next() {
+		m, err := scanRowProduct(rows)
+		if err != nil {
+			return nil, err
+		}
+		ms = append(ms, m)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return ms, nil
+}
+
+func scanRowProduct(s scanner) (*product.Model, error) {
+	m := &product.Model{}
+	observationNull := sql.NullString{}
+	updatedAtNull := sql.NullTime{}
+
+	err := s.Scan(
+		&m.ID,
+		&m.Name,
+		&observationNull,
+		&m.Price,
+		&m.CreatedAt,
+		&updatedAtNull,
+	)
+	if err != nil {
+		return &product.Model{}, err
+	}
+
+	m.Observations = observationNull.String
+	m.UpdatedAt = updatedAtNull.Time
+	return m, nil
 }

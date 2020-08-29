@@ -1,9 +1,14 @@
 package product
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
+)
+
+var (
+	ErrIDNotFound = errors.New("El producto no contiene un ID")
 )
 
 // Model of product
@@ -25,7 +30,7 @@ func (m *Model) String() string {
 		m.UpdatedAt.Format("2006-01-02"))
 }
 
-// Models slice of Model
+// Model slice of Model
 type Models []*Model
 
 func (m Models) String() string {
@@ -38,11 +43,13 @@ func (m Models) String() string {
 	return builder.String()
 }
 
-// Storage of Product
 type Storage interface {
 	Migrate() error
 	Create(*Model) error
+	Update(*Model) error
 	GetAll() (Models, error)
+	GetByID(uint) (*Model, error)
+	Delete(uint) error
 }
 
 // Service of Product
@@ -56,17 +63,42 @@ func NewService(s Storage) *Service {
 }
 
 // Migrate is used for migrate product
-func (s *Service) Migrate() error {
+func (s *Service) Migrated() error {
 	return s.storage.Migrate()
 }
 
-// Create is used for create a product
+// Migrate is used for create a product
 func (s *Service) Create(m *Model) error {
 	m.CreatedAt = time.Now()
-	return s.storage.Create(m)
+	err := s.storage.Create(m)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // GetAll is used for get all the products
 func (s *Service) GetAll() (Models, error) {
-	return s.storage.GetAll()
+	m, err := s.storage.GetAll()
+	return m, err
+}
+
+// GetByID is used for get a product
+func (s *Service) GetById(id uint) (*Model, error) {
+	return s.storage.GetByID(id)
+}
+
+// Update is used for update a product
+func (s *Service) Update(m *Model) error {
+	if m.ID == 0 {
+		return ErrIDNotFound
+	}
+	m.UpdatedAt = time.Now()
+
+	return s.storage.Update(m)
+}
+
+// Delete es usado para eliminar un producto
+func (s *Service) Delete(id uint) error {
+	return s.storage.Delete(id)
 }

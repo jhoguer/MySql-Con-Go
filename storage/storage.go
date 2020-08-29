@@ -19,7 +19,7 @@ var (
 func NewMySQLDB() {
 	once.Do(func() {
 		var err error
-		db, err = sql.Open("mysql", "root:toor@tcp(localhost:3306)/godb")
+		db, err = sql.Open("mysql", "root:toor@tcp(localhost:3306)/godb?parseTime=true")
 		if err != nil {
 			log.Fatalf("can't open db: %v", err)
 		}
