@@ -1,9 +1,15 @@
 package product
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
+)
+
+// ErrIDNotFound is a global variable for a new personalized error
+var (
+	ErrIDNotFound = errors.New("El producto no contiene un ID")
 )
 
 // Model of product
@@ -44,6 +50,7 @@ type Storage interface {
 	Create(*Model) error
 	GetAll() (Models, error)
 	GetByID(uint) (*Model, error)
+	Update(*Model) error
 }
 
 // Service of Product
@@ -75,4 +82,14 @@ func (s *Service) GetAll() (Models, error) {
 // GetById is used for get a product
 func (s *Service) GetById(id uint) (*Model, error) {
 	return s.storage.GetByID(id)
+}
+
+// Update is used for update a product
+func (s *Service) Update(m *Model) error {
+	if m.ID == 0 {
+		return ErrIDNotFound
+	}
+	m.UpdatedAt = time.Now()
+
+	return s.storage.Update(m)
 }
