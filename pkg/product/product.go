@@ -51,6 +51,7 @@ type Storage interface {
 	GetAll() (Models, error)
 	GetByID(uint) (*Model, error)
 	Update(*Model) error
+	Delete(uint) error
 }
 
 // Service of Product
@@ -92,4 +93,9 @@ func (s *Service) Update(m *Model) error {
 	m.UpdatedAt = time.Now()
 
 	return s.storage.Update(m)
+}
+
+// Delete es usado para eliminar un producto
+func (s *Service) Delete(id uint) error {
+	return s.storage.Delete(id)
 }

@@ -69,14 +69,19 @@ func main() {
 		fmt.Println(m)
 	}
 
-	k := &product.Model{
-		ID:    1,
-		Name:  "Curso de CSS",
-		Price: 40,
-	}
-	err = serviceProduct.Update(k)
+	// k := &product.Model{
+	// 	ID:    1,
+	// 	Name:  "Curso de CSS",
+	// 	Price: 40,
+	// }
+	// err = serviceProduct.Update(k)
+	// if err != nil {
+	// 	log.Fatalf("product.Update: %v", err)
+	// }
+
+	err = serviceProduct.Delete(3)
 	if err != nil {
-		log.Fatalf("product.Update: %v", err)
+		log.Fatalf("product.Delete: %v", err)
 	}
 
 }

@@ -26,6 +26,7 @@ const (
 	mySQLGetProductByID = mySQLGetAllProducts + " WHERE id = ?"
 	mySQLUpdateProduct  = `UPDATE products SET name = ?, observations = ?,
 	price = ?, updated_at = ? WHERE id = ?`
+	mySQLDeleteProduct = `DELETE FROM products WHERE id = ?`
 )
 
 // MySQLProduct used for work with mysql - product
@@ -157,6 +158,32 @@ func (p *MySQLProduct) Update(m *product.Model) error {
 		return fmt.Errorf("No existe el producto con id: %d", m.ID)
 	}
 	fmt.Println("Se actualizo el producto correctamente")
+	return nil
+}
+
+// Delete implement the interface product.Storage
+func (p *MySQLProduct) Delete(id uint) error {
+	stmt, err := p.db.Prepare(mySQLDeleteProduct)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("No existe el producto con id: %d", id)
+	}
+
+	fmt.Println("Se elimino el producto correctamente")
 	return nil
 }
 
