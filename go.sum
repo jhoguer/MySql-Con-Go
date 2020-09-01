@@ -1,2 +1,5 @@
 github.com/go-sql-driver/mysql v1.5.0 h1:ozyZYNQW3x3HtqT1jira07DN2PArx2v7/mN66gGcHOs=
 github.com/go-sql-driver/mysql v1.5.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
+github.com/jhoguer/Bases-de-datos-conGo v0.0.0-20200827223225-d3e3cde2c89d h1:5QMePpZ0VVpqYdNibyd4EfpHAteAwryY5+2Hd6ZXXVM=
+github.com/jhoguer/Bases-de-datos-conGo v0.0.0-20200827223225-d3e3cde2c89d/go.mod h1:8gzGR1n+FIky/Y/Ehk77K/xKN6PEErS0mM1V/h2hux8=
+github.com/lib/pq v1.8.0/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=

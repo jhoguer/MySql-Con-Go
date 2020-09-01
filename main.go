@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jhoguer/MySql-Con-Go/pkg/invoice"
 	"github.com/jhoguer/MySql-Con-Go/pkg/invoiceheader"
 	"github.com/jhoguer/MySql-Con-Go/pkg/invoiceitem"
 	"github.com/jhoguer/MySql-Con-Go/pkg/product"
@@ -41,9 +42,9 @@ func main() {
 
 	//
 	// m := &product.Model{
-	// 	Name:         "Curso de JavaScript",
-	// 	Price:        70,
-	// 	Observations: "Este curso es basico",
+	// 	Name:         "Curso Html",
+	// 	Price:        25,
+	// 	Observations: "Edicion 2020",
 	// }
 
 	// err = serviceProduct.Create(m)
@@ -79,9 +80,29 @@ func main() {
 	// 	log.Fatalf("product.Update: %v", err)
 	// }
 
-	err = serviceProduct.Delete(3)
-	if err != nil {
-		log.Fatalf("product.Delete: %v", err)
+	// err = serviceProduct.Delete(3)
+	// if err != nil {
+	// 	log.Fatalf("product.Delete: %v", err)
+	// }
+
+	// Transactions
+	// storageHeader := storage.NewMySQLInvoiceHeader(storage.Pool())
+	// storageItems := storage.NewMySQLInvoiceItem(storage.Pool())
+	storageInvoice := storage.NewMySQLInvoice(storage.Pool(), storageInvoiceHeader, storageInvoiceItem)
+
+	j := &invoice.Model{
+		Header: &invoiceheader.Model{
+			Client: "Thor",
+		},
+		Items: invoiceitem.Models{
+			&invoiceitem.Model{ProductID: 5},
+			&invoiceitem.Model{ProductID: 7},
+			&invoiceitem.Model{ProductID: 1},
+		},
+	}
+	serviceInvoice := invoice.NewService(storageInvoice)
+	if err := serviceInvoice.Create(j); err != nil {
+		log.Fatalf("invoice.Create: %v", err)
 	}
 
 }
